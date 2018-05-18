@@ -12,6 +12,7 @@ use Modules\Currency\Repositories\CurrencyRepository;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Setting;
 use DB;
+use AjaxResponse;
 class CurrencyController extends AdminBaseController
 {
     /**
@@ -33,8 +34,7 @@ class CurrencyController extends AdminBaseController
      */
     public function index()
     {
-        $rateList = $this->currency->getRateList();
-        return view('currency::admin.currencies.index', compact('rateList'));
+        return view('currency::admin.currencies.index' );
     }
 
     /**
@@ -75,16 +75,25 @@ class CurrencyController extends AdminBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  CurrencyRate $currency
-     * @param  UpdateCurrencyRequest $request
+     * @param  CurrencySymbol $currencysymbol
+     * @param  UpdateCurrencySymbolRequest $request
      * @return Response
      */
-    public function update(CurrencyRate $currency, UpdateCurrencyRequest $request)
+    public function update(CurrencyRate $currencyRate , Request $request )
     {
-        $this->currency->update($currency, $request->all());
 
-        return redirect()->route('admin.currency.currency.index')
-            ->withSuccess(trans('core::core.messages.resource updated', ['name' => trans('currency::currencies.title.currencies')]));
+        //$this->currencysymbol->update($currencysymbol, $request->all());
+        $data = $request->all();
+        $currency = $data['currency'];
+        //查询数据库有没有该currency
+        //有则修改
+
+        $currencyRate->symbol = $data['symbol'];
+        $currencyRate->rate = $data['rate'];
+        $currencyRate->save();
+
+
+        return AjaxResponse::success('成功' ,$currencyRate );
     }
 
     /**

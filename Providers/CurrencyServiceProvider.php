@@ -30,7 +30,6 @@ class CurrencyServiceProvider extends ServiceProvider
 
         $this->app['events']->listen(LoadingBackendTranslations::class, function (LoadingBackendTranslations $event) {
             $event->load('currencies', array_dot(trans('currency::currencies')));
-            $event->load('currencysymbols', array_dot(trans('currency::currencysymbols')));
             // append translations
 
         });
@@ -68,18 +67,7 @@ class CurrencyServiceProvider extends ServiceProvider
                 return new \Modules\Currency\Repositories\Cache\CacheCurrencyDecorator($repository);
             }
         );
-        $this->app->bind(
-            'Modules\Currency\Repositories\CurrencySymbolRepository',
-            function () {
-                $repository = new \Modules\Currency\Repositories\Eloquent\EloquentCurrencySymbolRepository(new \Modules\Currency\Entities\CurrencySymbol());
 
-                if (! config('app.cache')) {
-                    return $repository;
-                }
-
-                return new \Modules\Currency\Repositories\Cache\CacheCurrencySymbolDecorator($repository);
-            }
-        );
 // add bindings
 
 

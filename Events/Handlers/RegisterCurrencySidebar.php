@@ -63,44 +63,9 @@ class RegisterCurrencySidebar implements \Maatwebsite\Sidebar\SidebarExtender
                     );
                 });
 
-                $item->item(trans('currency::currencysymbols.title.currencysymbols'), function (Item $item) {
-                    $item->icon('fa fa-copy');
-                    $item->weight(0);
-                    $item->append('admin.currency.currencysymbol.create');
-                    $item->route('admin.currency.currencysymbol.index');
-                    $item->authorize(
-                        $this->auth->hasAccess('currency.currencysymbols.index')
-                    );
-                });
-
             });
         });
 
         return $menu;
-
-//        $menu->group(trans('core::sidebar.content'), function (Group $group) {
-//            $group->item(trans('currency::currencies.title.currencies'), function (Item $item) {
-//                $item->icon('fa fa-copy');
-//                $item->weight(10);
-//                $item->authorize(
-//                     /* append */
-//                );
-//                $item->item(trans('currency::currencies.title.currencies'), function (Item $item) {
-//                    $item->icon('fa fa-copy');
-//                    $item->weight(0);
-//                    $item->append('admin.currency.currency.create');
-//                    $item->route('admin.currency.currency.index');
-//                    $item->authorize(
-//                        $this->auth->hasAccess('currency.currencies.index')
-//                    );
-//                });
-
-// append
-
-//
-//            });
-//        });
-//
-//        return $menu;
     }
 }

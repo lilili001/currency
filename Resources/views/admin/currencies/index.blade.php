@@ -27,33 +27,37 @@
                  <?php
                     $defaultCurrency =  @setting('currency::default-currency');
                     $allowed_currencies = json_decode( @setting('currency::allowed-currencies') );
+                    //dd( $allowdCurrencies );
                 ?>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table class="data-table table table-bordered table-hover">
+                        <table class="data-table table table-bordered table-hover" id="table">
                             <thead>
                             <tr>
                                 <th>{{ trans('currency::currencies.title.currency from')  }}</th>
                                 <th>{{ trans('currency::currencies.title.currency to')  }}</th>
                                 <th>{{ trans('currency::currencies.title.currency rate')  }}</th>
+                                <th>{{ trans('currency::currencies.title.currency symbol')  }} </th>
                                 <th>{{ trans('core::core.table.created at') }}</th>
+                                <th data-sortable="false">{{ trans('core::core.table.actions') }}</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <?php if (isset($allowed_currencies)): ?>
-                            <?php foreach ($allowed_currencies as $currency): ?>
+                            <?php if (isset($allowdCurrencies)): ?>
+                            <?php foreach ($allowdCurrencies as $key=>$currency): ?>
                             <tr>
                                 <td>{{ $defaultCurrency  }}</td>
-                                <td>{{ $currency }}</td>
-                                <td> {{ $currency == $defaultCurrency ? 1 :  ((array) $rateList[ $currency ])['rate']  }} </td>
+                                <td>{{ $key }}</td>
+                                <td class="rate"> {{   $currency['rate']  }} </td>
+                                <td class="symbol">{{  $currency['symbol'] }}</td>
+                                <td>{{ $currency['created_at'] }}</td>
                                 <td>
-                                    {{  $currency == $defaultCurrency ?  null :  ((array) $rateList[ $currency ])['created_at']   }}
+                                    <button data-id="{{ $currency['id']  }}" data-currency="{{  $key  }}" class='edit-btn btn btn-sm btn-flat glyphicon glyphicon-edit' type='button'>编辑</button>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
                             <?php endif; ?>
                             </tbody>
-
                         </table>
                         <!-- /.box-body -->
                     </div>
@@ -88,7 +92,8 @@
     <?php $locale = locale(); ?>
     <script type="text/javascript">
         $(function () {
-            $('.data-table').dataTable({
+
+            var table =  $('.data-table').dataTable({
                 "paginate": true,
                 "lengthChange": true,
                 "filter": true,
@@ -99,6 +104,58 @@
                 "language": {
                     "url": '<?php echo Module::asset("core:js/vendor/datatables/{$locale}.json") ?>'
                 }
+            });
+
+            $("#table tbody").on("click",".edit-btn",function(){
+                var tds=$(this).parents("tr").children();
+                $.each(tds, function(i,val){
+                    var jqob=$(val);
+                    if(i < 2 || i==4 ||  jqob.has('button').length ){return true;}//跳过第1项 序号,按钮
+                    var txt=jqob.text();
+                    var put=$("<input type='text'>");
+                    put.val(txt);
+                    jqob.html(put);
+                });
+                $(this).html("保存");
+                $(this).toggleClass("edit-btn glyphicon-edit");
+                $(this).toggleClass("save-btn glyphicon-ok");
+            });
+
+            $("#table tbody").on("click",".save-btn",function(){
+
+                var row= ($(this).parents("tr"));
+                var tds=$(this).parents("tr").children();
+
+                var data = null;
+                $.each(tds, function(i,val){
+                    var jqob=$(val);
+                    //把input变为字符串
+                    if(!jqob.has('button').length){
+                        var txt=jqob.children("input").val();
+                        jqob.html(txt);
+                        (jqob).data(txt);//修改DataTables对象的数据
+                    }
+                });
+
+                $.ajax({
+                    "url":  route('admin.currency.currency.update',{ currency : $(this).data('id')  }),
+                    "data":{
+                        currency:$(this).data('currency'),
+                        rate: $(this).parents('tr').children('.rate').text(),
+                        symbol: $(this).parents('tr').children('.symbol').text(),
+                        _token:'{{csrf_token()}}',
+                    },
+                    "type":"post",
+                    "error":function(){
+                        alert("服务器未正常响应，请重试");
+                    },
+                    "success":function(response){
+                        //alert(response);
+                    }
+                });
+                $(this).html("编辑");
+                $(this).toggleClass("edit-btn  glyphicon-edit");
+                $(this).toggleClass("save-btn  glyphicon-ok");
             });
         });
     </script>

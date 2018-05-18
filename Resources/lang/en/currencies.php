@@ -12,7 +12,8 @@ return [
         'currency rate' => 'Currency Rate',
         'currency from' => 'Currency From',
         'currency to'  => 'Currency To',
-        'currency rate' => 'Currency Rate'
+        'currency rate' => 'Currency Rate',
+        'currency symbol' => 'Currency Symbol',
     ],
     'button' => [
         'create currency' => 'Create a currency',
