@@ -49,7 +49,6 @@ class CurrencyController extends AdminBaseController
                 $rateList = arrayChangeKey($rateList , "currency_to" );
 
             }else{
-
                 $url = "http://api.jisuapi.com/exchange/single?currency=USD&appkey=11b4e2b81a607dce";
                 $ch = curl_init();
                 $timeout = 5;
@@ -64,10 +63,15 @@ class CurrencyController extends AdminBaseController
                 $tmpData = [];
 
                 foreach( $rateList as  $currency => $item ){
+                    $rate = $item->rate;
+                    if( $currency == $defaultCurrency ){
+                        info($currency);
+                        $rate = 1;
+                    }
                     $tmpData[] = [
                         'currency_from' => $defaultCurrency,
                         'currency_to' => $currency,
-                        'rate' => $item->rate,
+                        'rate' => $rate,
                         'created_at' => Carbon::now(),
                         'updated_at' =>  Carbon::now()
                     ];
@@ -79,7 +83,6 @@ class CurrencyController extends AdminBaseController
                 $currenciesFromDB = CurrencyRate::all();
                 $rateList = $currenciesFromDB->toArray();
                 $rateList = arrayChangeKey($rateList , "currency_to" );
-
             }
 
         }catch (Exception $e){

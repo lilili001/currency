@@ -45,9 +45,9 @@
                             <tr>
                                 <td>{{ $defaultCurrency  }}</td>
                                 <td>{{ $currency }}</td>
-                                <td> {{  ((array) $rateList[ $currency ])['rate']  }} </td>
+                                <td> {{ $currency == $defaultCurrency ? 1 :  ((array) $rateList[ $currency ])['rate']  }} </td>
                                 <td>
-                                    {{  ((array) $rateList[ $currency ])['created_at']   }}
+                                    {{  $currency == $defaultCurrency ?  null :  ((array) $rateList[ $currency ])['created_at']   }}
                                 </td>
                             </tr>
                             <?php endforeach; ?>

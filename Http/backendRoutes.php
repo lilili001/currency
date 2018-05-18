@@ -37,6 +37,7 @@ $router->group(['prefix' =>'/currency'], function (Router $router) {
         'uses' => 'CurrencyController@destroy',
         'middleware' => 'can:currency.currencies.destroy'
     ]);
+    /*************************** currencysymbol *********************************************/
     $router->bind('currencysymbol', function ($id) {
         return app('Modules\Currency\Repositories\CurrencySymbolRepository')->find($id);
     });
@@ -50,26 +51,26 @@ $router->group(['prefix' =>'/currency'], function (Router $router) {
         'uses' => 'CurrencySymbolController@create',
         'middleware' => 'can:currency.currencysymbols.create'
     ]);
+//    $router->post('currencysymbols', [
+//        'as' => 'admin.currency.currencysymbol.store',
+//        'uses' => 'CurrencySymbolController@store',
+//        'middleware' => 'can:currency.currencysymbols.create'
+//    ]);
+//    $router->get('currencysymbols/{currencysymbol}/edit', [
+//        'as' => 'admin.currency.currencysymbol.edit',
+//        'uses' => 'CurrencySymbolController@edit',
+//        'middleware' => 'can:currency.currencysymbols.edit'
+//    ]);
     $router->post('currencysymbols', [
-        'as' => 'admin.currency.currencysymbol.store',
-        'uses' => 'CurrencySymbolController@store',
-        'middleware' => 'can:currency.currencysymbols.create'
-    ]);
-    $router->get('currencysymbols/{currencysymbol}/edit', [
-        'as' => 'admin.currency.currencysymbol.edit',
-        'uses' => 'CurrencySymbolController@edit',
-        'middleware' => 'can:currency.currencysymbols.edit'
-    ]);
-    $router->put('currencysymbols/{currencysymbol}', [
         'as' => 'admin.currency.currencysymbol.update',
         'uses' => 'CurrencySymbolController@update',
-        'middleware' => 'can:currency.currencysymbols.edit'
+        //'middleware' => 'can:currency.currencysymbols.edit'
     ]);
-    $router->delete('currencysymbols/{currencysymbol}', [
-        'as' => 'admin.currency.currencysymbol.destroy',
-        'uses' => 'CurrencySymbolController@destroy',
-        'middleware' => 'can:currency.currencysymbols.destroy'
-    ]);
+//    $router->delete('currencysymbols/{currencysymbol}', [
+//        'as' => 'admin.currency.currencysymbol.destroy',
+//        'uses' => 'CurrencySymbolController@destroy',
+//        'middleware' => 'can:currency.currencysymbols.destroy'
+//    ]);
 // append
 
 

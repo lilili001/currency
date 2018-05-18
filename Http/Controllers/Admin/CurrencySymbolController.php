@@ -4,12 +4,14 @@ namespace Modules\Currency\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Modules\Currency\Entities\CurrencySymbol;
 use Modules\Currency\Http\Requests\CreateCurrencySymbolRequest;
 use Modules\Currency\Http\Requests\UpdateCurrencySymbolRequest;
 use Modules\Currency\Repositories\CurrencySymbolRepository;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
-
+use AjaxResponse;
+use Setting;
 class CurrencySymbolController extends AdminBaseController
 {
     /**
@@ -31,9 +33,9 @@ class CurrencySymbolController extends AdminBaseController
      */
     public function index()
     {
-        //$currencysymbols = $this->currencysymbol->all();
+        $currencysymbols = $this->currencysymbol->all();
 
-        return view('currency::admin.currencysymbols.index', compact(''));
+        return view('currency::admin.currencysymbols.index', compact('currencysymbols' ));
     }
 
     /**
@@ -78,12 +80,23 @@ class CurrencySymbolController extends AdminBaseController
      * @param  UpdateCurrencySymbolRequest $request
      * @return Response
      */
-    public function update(CurrencySymbol $currencysymbol, UpdateCurrencySymbolRequest $request)
+    public function update( UpdateCurrencySymbolRequest $request )
     {
-        $this->currencysymbol->update($currencysymbol, $request->all());
+        //$this->currencysymbol->update($currencysymbol, $request->all());
+        $data = $request->all();
+        $currency = $data['currency'];
+        //查询数据库有没有该currency
+        $currency = CurrencySymbol::where(['currency'=>$currency])->get();
+        //有则修改
+        if( count( $currency ) > 0 ){
+            $currency = $currency->first()->update(['symbol'=> $data['symbol'] ]);
+        }else{
+            //没有则新增
+            $currency = CurrencySymbol::create($data);
+        }
 
-        return redirect()->route('admin.currency.currencysymbol.index')
-            ->withSuccess(trans('core::core.messages.resource updated', ['name' => trans('currency::currencysymbols.title.currencysymbols')]));
+        return AjaxResponse::success('成功' ,$currency );
+
     }
 
     /**

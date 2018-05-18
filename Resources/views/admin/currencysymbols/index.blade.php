@@ -13,13 +13,7 @@
 @section('content')
     <div class="row">
         <div class="col-xs-12">
-            <div class="row">
-                <div class="btn-group pull-right" style="margin: 0 15px 15px 0;">
-                    <a href="{{ route('admin.currency.currencysymbol.create') }}" class="btn btn-primary btn-flat" style="padding: 4px 10px;">
-                        <i class="fa fa-pencil"></i> {{ trans('currency::currencysymbols.button.create currencysymbol') }}
-                    </a>
-                </div>
-            </div>
+
             <div class="box box-primary">
                 <div class="box-header">
                 </div>
@@ -44,7 +38,12 @@
                             <?php foreach ($allowed_currencies as $currencysymbol): ?>
                             <tr>
                                 <td>{{$currencysymbol}} </td>
-                                <td> sdf </td>
+                                <td>  {{
+                                !empty( $currencysymbols )  &&  !empty( $currencysymbols[$currencysymbol] ) ?
+                                          $currencysymbols[$currencysymbol]->symbol :
+                                        ''
+                                }}
+                                </td>
                                 <td>
                                     <button data-currency="{{  $currencysymbol  }}" class='edit-btn btn btn-sm btn-flat glyphicon glyphicon-edit' type='button'>编辑</button>
                                 </td>
@@ -99,7 +98,6 @@
                 }
             });
 
-
             $("#table tbody").on("click",".edit-btn",function(){
                 var tds=$(this).parents("tr").children();
                 $.each(tds, function(i,val){
@@ -116,29 +114,35 @@
             });
 
             $("#table tbody").on("click",".save-btn",function(){
+
                 var row= ($(this).parents("tr"));
                 var tds=$(this).parents("tr").children();
+
+                var data = null;
                 $.each(tds, function(i,val){
                     var jqob=$(val);
-                    console.log(jqob);
                     //把input变为字符串
                     if(!jqob.has('button').length){
                         var txt=jqob.children("input").val();
                         jqob.html(txt);
                         (jqob).data(txt);//修改DataTables对象的数据
                     }
+                    console.log(jqob);
                 });
                 var data=row.data();
-
                 $.ajax({
-                    "url":route('admin.currency.currency.update',{'currency': 1}),
-                    "data":data,
+                    "url":  route('admin.currency.currencysymbol.update'),
+                    "data":{
+                        currency:$(this).data('currency'),
+                        symbol: $(this).parent('td').prev().text(),
+                        _token:'{{csrf_token()}}',
+                    },
                     "type":"post",
                     "error":function(){
                         alert("服务器未正常响应，请重试");
                     },
                     "success":function(response){
-                        alert(response);
+                        //alert(response);
                     }
                 });
                 $(this).html("编辑");
