@@ -16,3 +16,4 @@
 
 
 view()->composer('*',\Modules\Currency\Composers\CurrencyDefaultListViewComposer::class);
+view()->composer('*',\Modules\Currency\Composers\CurrencyAllowedViewComposer::class);

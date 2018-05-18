@@ -34,7 +34,6 @@ class CurrencySymbolController extends AdminBaseController
     public function index()
     {
         $currencysymbols = $this->currencysymbol->all();
-
         return view('currency::admin.currencysymbols.index', compact('currencysymbols' ));
     }
 

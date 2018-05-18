@@ -20,9 +20,10 @@ class EloquentCurrencySymbolRepository extends EloquentBaseRepository implements
         $temp=[];
         foreach ( $allowedCurrencies as $item ){
             //check db
-            $fromDb = CurrencySymbol::where('currency',$item)->get() ;
-
-            $temp[$item] = count( $fromDb ) > 0 ? $fromDb->first() :  DB::table('currency_code')->where('code',$item)->get()->first() ;
+            if( $item !== $defaultCurrency ){
+                $fromDb = CurrencySymbol::where('currency',$item)->get() ;
+                $temp[$item] = count( $fromDb ) > 0 ?    $fromDb->first()   :  DB::table('currency_code')->where('code',$item)->get()->first()    ;
+            }
         }
         $currencySymbol =   $temp;
 
