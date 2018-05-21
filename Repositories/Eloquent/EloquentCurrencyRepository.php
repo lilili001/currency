@@ -29,9 +29,9 @@ class EloquentCurrencyRepository extends EloquentBaseRepository implements Curre
 
             }else{
 
-                info('数据库没有的情况');
+                info('数据库没有的情况,默认取数据库,可以开启定时任务获取实时货币');
 
-                $url = "http://api.jisuapi.com/exchange/single?currency=USD&appkey=11b4e2b81a607dce";
+                $url = "http://api.jisuapi.com/exchange/single?currency=USD&appkey=".env('CURRENCY_APP_KEY');
                 $ch = curl_init();
                 $timeout = 5;
                 curl_setopt ($ch, CURLOPT_URL, "$url");
@@ -78,7 +78,6 @@ class EloquentCurrencyRepository extends EloquentBaseRepository implements Curre
                 $rateList = $currenciesFromDB->toArray();
                 $rateList = arrayChangeKey($rateList , "currency_to" );
             }
-
         }catch (Exception $e){
             return $e->getMessage();
         }
