@@ -19,9 +19,6 @@ class EloquentCurrencyRepository extends EloquentBaseRepository implements Curre
             $allowedCurrencies = json_decode( Setting::get('currency::allowed-currencies') );
             $currenciesFromDB = CurrencyRate::all();
 
-            info( count( $allowedCurrencies ) );
-            info( count( $currenciesFromDB ) );
-
             //如果数据库有 直接取数据库的 如果没有则调接口
             if( count( $allowedCurrencies ) == count( $currenciesFromDB ) ){
                 $rateList = $currenciesFromDB->toArray();
